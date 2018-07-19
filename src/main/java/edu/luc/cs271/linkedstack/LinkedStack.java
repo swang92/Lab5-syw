@@ -10,6 +10,7 @@ public class LinkedStack<E> implements IStack<E> {
    * The topmost node of this stack. The stack gets pushed down from here.
    */
   private Node<E> top;
+  private int size = 10;
 
   @Override
   public E push(final E obj) {
@@ -42,17 +43,38 @@ public class LinkedStack<E> implements IStack<E> {
     return top == null;
   }
 
-  @Override
-  public List<E> asList() {
-      List<E> result = new ArrayList<>();
-      Node<E> oldtop = top;
-      while (top != null) {
-        result.add(top.data);
-        top = top.next;
-      }
-      top = oldtop;
-      return result;
+
+  private void populateList(final Node<E> curr, final List<E> result) {
+    if (curr == null) {
+      return;
+    }
+    else {
+      result.add(curr.data);
+      populateList(curr.next, result);
     }
   }
 
+    @Override
+  public List<E> asList() {
+    final ArrayList<E> result = new ArrayList<>(size);
+    populateList(top, result);
+    return result;
+  }
 
+  private void populateFifoList(final Node<E> curr, final List<E> result) {
+    if (curr == null) {
+      return;
+    }
+    else {
+      result.add(0, curr.data);
+      populateFifoList(curr.next, result);
+    }
+  }
+
+  @Override
+  public List<E> asFifoList() {
+    final ArrayList<E> result = new ArrayList<>(size);
+    populateFifoList(top, result);
+    return result;
+  }
+}
